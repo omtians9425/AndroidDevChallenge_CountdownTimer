@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -38,12 +39,18 @@ fun TimerScreen() {
     StatelessTimerScreen(
         sweepAngle = sweepAngle,
         countDownTime = viewModel.countDownTimeText,
+        timerStarted = viewModel.timerStarted,
         onFabClicked = viewModel::onFabClicked
     )
 }
 
 @Composable
-fun StatelessTimerScreen(sweepAngle: Float, countDownTime: String, onFabClicked: () -> Unit) {
+fun StatelessTimerScreen(
+    sweepAngle: Float,
+    countDownTime: String,
+    timerStarted: Boolean,
+    onFabClicked: () -> Unit
+) {
     Scaffold(
         topBar = {
             TopAppBar(backgroundColor = Color.Transparent) {
@@ -59,7 +66,11 @@ fun StatelessTimerScreen(sweepAngle: Float, countDownTime: String, onFabClicked:
                 backgroundColor = MaterialTheme.colors.primary,
                 onClick = onFabClicked,
             ) {
-                Icon(Icons.Default.PlayArrow, contentDescription = "Start timer")
+                if (timerStarted) {
+                    Icon(Icons.Default.Pause, contentDescription = "Pause timer")
+                } else {
+                    Icon(Icons.Default.PlayArrow, contentDescription = "Start timer")
+                }
             }
         },
         floatingActionButtonPosition = FabPosition.Center
