@@ -11,7 +11,7 @@ class TimerViewModel : ViewModel() {
 
     private val countDownTimeFlow: Flow<Int> = flow {
         var seconds = 0
-        while (seconds < maxTime) {
+        while (seconds <= maxTime) {
             emit(seconds)
             seconds++
             delay(1000L)

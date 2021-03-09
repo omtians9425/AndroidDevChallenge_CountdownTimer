@@ -30,7 +30,7 @@ fun StateLessTimerScreen(sweepAngle: Float) {
         translate(size.width / 2, size.height / 2) {
             drawArc(
                 color = purple200,
-                startAngle = 0f,
+                startAngle = -90f,
                 sweepAngle = angle,
                 useCenter = false,
                 style = Stroke(width = 10f, cap = StrokeCap.Round),
