@@ -19,7 +19,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.translate
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -36,11 +35,11 @@ fun TimerScreen() {
         )
     )
     val countdownTimeText by viewModel.countDownTimeText.collectAsState()
-    StateLessTimerScreen(sweepAngle = sweepAngle, countDownTime = countdownTimeText)
+    StatelessTimerScreen(sweepAngle = sweepAngle, countDownTime = countdownTimeText)
 }
 
 @Composable
-fun StateLessTimerScreen(sweepAngle: Float, countDownTime: String) {
+fun StatelessTimerScreen(sweepAngle: Float, countDownTime: String) {
     Box(contentAlignment = Alignment.Center) {
         Canvas(modifier = Modifier.fillMaxSize()) {
             val arcSizePx = 300.dp.toPx()
