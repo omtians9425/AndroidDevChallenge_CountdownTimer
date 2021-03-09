@@ -18,7 +18,7 @@ class TimerViewModel : ViewModel() {
         private set
 
     private val countDownTimeTextFlow: Flow<String> = flow {
-        countedTimeSecs = 3
+        countedTimeSecs = 60
         timerStarted = true
 
         var seconds = countedTimeSecs

@@ -58,8 +58,7 @@ fun StateLessTimerScreen(sweepAngle: Float, countDownTime: String) {
         Text(
             text = countDownTime,
             color = MaterialTheme.colors.primary,
-            fontSize = 48.sp,
-            fontWeight = FontWeight.Bold
+            fontSize = 48.sp
         )
     }
 }
