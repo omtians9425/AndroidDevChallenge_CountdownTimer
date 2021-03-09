@@ -1,26 +1,37 @@
 package com.example.androiddevchallenge.ui
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.launch
 
 class TimerViewModel : ViewModel() {
 
-    private val maxTime = 50
+    var countedTimeSecs by mutableStateOf(0)
+        private set
+
+    var timerStarted by mutableStateOf(false)
+        private set
 
     private val countDownTimeFlow: Flow<Int> = flow {
         var seconds = 0
-        while (seconds <= maxTime) {
+        while (seconds <= countedTimeSecs) {
             emit(seconds)
             seconds++
             delay(1000L)
         }
     }
 
-    val timerSweepAngle: StateFlow<Float> = countDownTimeFlow.map { it * (360f / maxTime) }.stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.Lazily,
-        initialValue = 0f
-    )
+    init {
+        viewModelScope.launch {
+            delay(1000L)
+            countedTimeSecs = 40
+            timerStarted = true
+        }
+    }
 }

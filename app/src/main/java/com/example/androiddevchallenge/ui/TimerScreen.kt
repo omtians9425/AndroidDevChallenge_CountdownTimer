@@ -1,10 +1,12 @@
 package com.example.androiddevchallenge.ui
 
+import android.util.Log
+import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -18,13 +20,20 @@ import com.example.androiddevchallenge.ui.theme.purple200
 
 @Composable
 fun TimerScreen() {
-    val sweepAngle = viewModel<TimerViewModel>().timerSweepAngle.collectAsState()
-    StateLessTimerScreen(sweepAngle = sweepAngle.value)
+    val viewModel = viewModel<TimerViewModel>()
+    StateLessTimerScreen(
+        duration = viewModel.countedTimeSecs,
+        timerStarted = viewModel.timerStarted
+    )
 }
 
 @Composable
-fun StateLessTimerScreen(sweepAngle: Float) {
-    val angle: Float by animateFloatAsState(targetValue = sweepAngle)
+fun StateLessTimerScreen(duration: Int, timerStarted: Boolean) {
+    val angle: Float by animateFloatAsState(
+        targetValue = if (timerStarted) 360f else 0f,
+        animationSpec = tween(durationMillis = duration * 1000, easing = LinearEasing)
+    )
+    Log.d("tag", "duration: $duration, timerStarted: $timerStarted, angle: $angle")
     Canvas(modifier = Modifier.fillMaxSize()) {
         val arcSizePx = 300.dp.toPx()
         translate(size.width / 2, size.height / 2) {
