@@ -8,14 +8,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 
 class TimerViewModel : ViewModel() {
 
+    // TODO: Set from UI
     var countedTimeSecs by mutableStateOf(60)
-        private set
-
-    var timerStarted by mutableStateOf(false)
         private set
 
     var countDownTimeText by mutableStateOf("")
@@ -33,9 +34,10 @@ class TimerViewModel : ViewModel() {
 
     var timerJob: Job? = null
 
-    private fun startTimer() {
-        timerStarted = true
+    val isTimerRunning
+        get() = timerJob?.isActive ?: false
 
+    private fun startTimer() {
         timerJob = countDownTimeTextFlow.onEach {
             countDownTimeText = it
         }.launchIn(viewModelScope)
@@ -43,12 +45,17 @@ class TimerViewModel : ViewModel() {
 
     fun onFabClicked() {
         timerJob?.let {
-            if(it.isActive) {
+            if (it.isActive) {
                 it.cancel()
-                timerStarted = false
                 return
             }
         }
         startTimer()
+    }
+
+    override fun onCleared() {
+        timerJob?.cancel()
+        timerJob = null
+        super.onCleared()
     }
 }

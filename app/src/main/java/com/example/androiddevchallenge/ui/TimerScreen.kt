@@ -30,7 +30,7 @@ import com.example.androiddevchallenge.ui.theme.purple200
 fun TimerScreen() {
     val viewModel = viewModel<TimerViewModel>()
     val sweepAngle: Float by animateFloatAsState(
-        targetValue = if (viewModel.timerStarted) -360f else 0f,
+        targetValue = if (viewModel.isTimerRunning) -360f else 0f,
         animationSpec = tween(
             durationMillis = viewModel.countedTimeSecs * 1000,
             easing = LinearEasing
@@ -39,7 +39,7 @@ fun TimerScreen() {
     StatelessTimerScreen(
         sweepAngle = sweepAngle,
         countDownTime = viewModel.countDownTimeText,
-        timerStarted = viewModel.timerStarted,
+        timerStarted = viewModel.isTimerRunning,
         onFabClicked = viewModel::onFabClicked
     )
 }
