@@ -6,34 +6,49 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 
 class TimerViewModel : ViewModel() {
 
-    var countedTimeSecs by mutableStateOf(0)
+    var countedTimeSecs by mutableStateOf(60)
         private set
 
     var timerStarted by mutableStateOf(false)
         private set
 
-    private val countDownTimeTextFlow: Flow<String> = flow {
-        countedTimeSecs = 60
-        timerStarted = true
+    var countDownTimeText by mutableStateOf("")
+        private set
 
-        var seconds = countedTimeSecs
-        while (seconds-- > 0) {
+    private val countDownTimeTextFlow: Flow<String> = flow {
+        while (countedTimeSecs-- > 0) {
             emit(
-                if (seconds <= 60) seconds.toString()
-                else DateUtils.formatElapsedTime(seconds.toLong())
+                if (countedTimeSecs <= 60) countedTimeSecs.toString()
+                else DateUtils.formatElapsedTime(countedTimeSecs.toLong())
             )
             delay(1000L)
         }
     }
 
-    val countDownTimeText: StateFlow<String> = countDownTimeTextFlow.stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.Lazily,
-        initialValue = "0:00"
-    )
+    var timerJob: Job? = null
+
+    private fun startTimer() {
+        timerStarted = true
+
+        timerJob = countDownTimeTextFlow.onEach {
+            countDownTimeText = it
+        }.launchIn(viewModelScope)
+    }
+
+    fun onFabClicked() {
+        timerJob?.let {
+            if(it.isActive) {
+                it.cancel()
+                timerStarted = false
+                return
+            }
+        }
+        startTimer()
+    }
 }

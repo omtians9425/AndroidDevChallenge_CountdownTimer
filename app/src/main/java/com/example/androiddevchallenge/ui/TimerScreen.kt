@@ -10,7 +10,6 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -36,12 +35,15 @@ fun TimerScreen() {
             easing = LinearEasing
         )
     )
-    val countdownTimeText by viewModel.countDownTimeText.collectAsState()
-    StatelessTimerScreen(sweepAngle = sweepAngle, countDownTime = countdownTimeText)
+    StatelessTimerScreen(
+        sweepAngle = sweepAngle,
+        countDownTime = viewModel.countDownTimeText,
+        onFabClicked = viewModel::onFabClicked
+    )
 }
 
 @Composable
-fun StatelessTimerScreen(sweepAngle: Float, countDownTime: String) {
+fun StatelessTimerScreen(sweepAngle: Float, countDownTime: String, onFabClicked: () -> Unit) {
     Scaffold(
         topBar = {
             TopAppBar(backgroundColor = Color.Transparent) {
@@ -55,7 +57,7 @@ fun StatelessTimerScreen(sweepAngle: Float, countDownTime: String) {
         floatingActionButton = {
             FloatingActionButton(
                 backgroundColor = MaterialTheme.colors.primary,
-                onClick = { /*TODO*/ },
+                onClick = onFabClicked,
             ) {
                 Icon(Icons.Default.PlayArrow, contentDescription = "Start timer")
             }
