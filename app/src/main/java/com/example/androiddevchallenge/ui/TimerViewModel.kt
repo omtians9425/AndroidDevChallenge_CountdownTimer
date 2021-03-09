@@ -1,14 +1,13 @@
 package com.example.androiddevchallenge.ui
 
+import android.text.format.DateUtils
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.*
 
 class TimerViewModel : ViewModel() {
 
@@ -18,20 +17,23 @@ class TimerViewModel : ViewModel() {
     var timerStarted by mutableStateOf(false)
         private set
 
-    private val countDownTimeFlow: Flow<Int> = flow {
-        var seconds = 0
-        while (seconds <= countedTimeSecs) {
-            emit(seconds)
-            seconds++
+    private val countDownTimeTextFlow: Flow<String> = flow {
+        countedTimeSecs = 3
+        timerStarted = true
+
+        var seconds = countedTimeSecs
+        while (seconds-- > 0) {
+            emit(
+                if (seconds <= 60) seconds.toString()
+                else DateUtils.formatElapsedTime(seconds.toLong())
+            )
             delay(1000L)
         }
     }
 
-    init {
-        viewModelScope.launch {
-            delay(1000L)
-            countedTimeSecs = 40
-            timerStarted = true
-        }
-    }
+    val countDownTimeText: StateFlow<String> = countDownTimeTextFlow.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.Lazily,
+        initialValue = "0:00"
+    )
 }

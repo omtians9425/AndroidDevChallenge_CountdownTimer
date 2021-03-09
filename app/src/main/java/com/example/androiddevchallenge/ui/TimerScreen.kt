@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -33,11 +34,12 @@ fun TimerScreen() {
             easing = LinearEasing
         )
     )
-    StateLessTimerScreen(sweepAngle = sweepAngle)
+    val countdownTimeText by viewModel.countDownTimeText.collectAsState()
+    StateLessTimerScreen(sweepAngle = sweepAngle, countDownTime = countdownTimeText)
 }
 
 @Composable
-fun StateLessTimerScreen(sweepAngle: Float) {
+fun StateLessTimerScreen(sweepAngle: Float, countDownTime: String) {
     Box(contentAlignment = Alignment.Center) {
         Canvas(modifier = Modifier.fillMaxSize()) {
             val arcSizePx = 300.dp.toPx()
@@ -54,7 +56,7 @@ fun StateLessTimerScreen(sweepAngle: Float) {
             }
         }
         Text(
-            text = "hog",
+            text = countDownTime,
             color = MaterialTheme.colors.primary,
             fontSize = 48.sp,
             fontWeight = FontWeight.Bold
